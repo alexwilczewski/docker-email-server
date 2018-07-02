@@ -1,0 +1,39 @@
+FROM alpine:3.7
+
+ENV PostfixDL http://cdn.postfix.johnriley.me/mirrors/postfix-release/official/postfix-3.3.1.tar.gz
+RUN wget --directory-prefix=/tmp "$PostfixDL"
+
+RUN tar xvzf /tmp/postfix-3.3.1.tar.gz --directory /tmp
+
+RUN apk add --no-cache make gcc linux-headers build-base
+# automake
+# glib-dev ## might be too many dependencies?
+
+RUN cd /tmp/postfix-3.3.1/
+RUN make makefiles CCARGS="-DNO_DB"
+
+RUN mv /usr/sbin/sendmail /usr/sbin/sendmail.OFF
+
+RUN addgroup -S postfix
+RUN adduser -S -H -D -s /sbin/nologin -h /dev/null -G postfix -g postfix postfix
+RUN addgroup -S postdrop
+
+# https://github.com/thkukuk/rpcsvc-proto/archive/v1.4/rpcsvc-proto-1.4.tar.gz
+
+CMD ["/bin/sh"]
+
+
+Round #2
+wget --directory-prefix=/tmp http://cdn.postfix.johnriley.me/mirrors/postfix-release/official/postfix-3.3.1.tar.gz
+tar xvzf /tmp/postfix-3.3.1.tar.gz --directory /tmp
+cd postfix-3.3.1/
+apk add --no-cache build-base db-dev pcre-dev libressl-dev perl file
+make -f Makefile.in MAKELEVEL= Makefiles
+apk add --no-cache linux-headers coreutils
+
+
+Round #3
+apk add --no-cache build-base db-dev pcre-dev libressl-dev postgresql-dev openldap-dev cyrus-sasl-dev perl file sqlite-dev linux-headers coreutils lmdb-dev
+apk add --no-cache mariadb-dev
+wget http://cdn.postfix.johnriley.me/mirrors/postfix-release/official/postfix-3.3.1.tar.gz
+

@@ -2,11 +2,13 @@ FROM alpine:3.7
 
 RUN apk add --no-cache postfix dovecot
 
-CMD ["/bin/sh"]
+RUN mkdir /etc/ssl/mail \
+  && touch /etc/ssl/mail/mailcert.crt \
+  && touch /etc/ssl/mail/mailkey.key
 
+RUN mkdir /var/vmail \
+  && chown vmail:mail /var/vmail
 
-# Post start
-# Sync updates to aliases file.
-# newaliases
-#
-# postfix start
+COPY start.sh /bin/start
+
+CMD ["start"]
