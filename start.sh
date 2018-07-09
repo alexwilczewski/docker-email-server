@@ -5,4 +5,5 @@ chown vmail:mail /var/vmail
 syslogd
 newaliases
 postfix start
-exec dovecot -F
+exec dovecot
+# exec dovecot -F
